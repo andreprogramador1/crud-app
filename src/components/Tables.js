@@ -2,7 +2,7 @@ import React, { useState ,useEffect} from 'react'
 import api from '../services/api' 
 import { Table, Button } from 'reactstrap';
 
-export const Tables = () => {
+export const Tables = ({ toggle }) => {
 
   const [data, setData] = useState([]);
 
@@ -15,8 +15,12 @@ export const Tables = () => {
     getContent()
   },[data])
 
+
+  
+
   return (
     <Table>
+
       <thead>
         <tr>
           <th>#</th>
@@ -39,7 +43,7 @@ export const Tables = () => {
               <td>{user.occupation}</td>
               <td>{user.phone}</td>
               <td  width='1px'><Button color="warning">Edit</Button></td>
-              <td><Button color="danger">Delete</Button>{' '}</td>
+              <td><Button color="danger" onClick={toggle}>Delete</Button>{' '}</td>
           </tr>
         ))}
 
