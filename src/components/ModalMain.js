@@ -1,4 +1,5 @@
 import React,{ useState } from 'react'
+import api from '../services/api' 
 
 import {
   Form,
@@ -13,10 +14,17 @@ import {
   Button
 } from 'reactstrap'
 
-export const ModalMain = ({ modal, toggle }) => {
+export const ModalMain = ({ modal, toggle, id, ondelete }) => {
 
+
+  const handleDelete = async (id) => {
+    console.log(id)
+    const removed = await api.delete(`/users/${id}`)
+    if(removed.status === 200) {
+      ondelete(id)
+    }
+  }
   
- 
 
 
   return (
@@ -27,7 +35,7 @@ export const ModalMain = ({ modal, toggle }) => {
             Delete user?
           </ModalBody>
           <ModalFooter>
-            <Button color="primary" onClick={toggle}>Do Something</Button>{' '}
+            <Button color="primary" onClick={() => {toggle();  handleDelete(id)} }>Do Something</Button>{' '}
             <Button color="secondary" onClick={toggle}>Cancel</Button>
           </ModalFooter>
         </Modal>
