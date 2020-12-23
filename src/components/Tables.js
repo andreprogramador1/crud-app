@@ -31,7 +31,7 @@ export const Tables = () => {
 
   return (
     <>
-    <Formu toggle2={toggle2} modal2={modal2}/>
+    <Formu toggle2={toggle2} modal2={modal2} id={id}/>
     <ModalMain toggle={toggle} modal={modal} id={id} ondelete={filterData} />
     <Table>
 
@@ -60,7 +60,7 @@ export const Tables = () => {
               <td><Button color="danger" onClick={ () => {toggle(); setId(user._id)} } >Delete</Button>{' '}</td>
           </tr>
         ))}
-
+        <Button color="primary" onClick={ () => {toggle2();} } >Create</Button>
       </tbody>
     </Table>
     </>
