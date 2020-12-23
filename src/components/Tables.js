@@ -1,6 +1,7 @@
 import React, { useState ,useEffect} from 'react'
 import api from '../services/api' 
 import { ModalMain } from './ModalMain'
+import { Formu } from './Formu'
 import { Table, Button } from 'reactstrap';
 
 export const Tables = () => {
@@ -9,6 +10,11 @@ export const Tables = () => {
   const [id, setId] = useState('')
   const [modal, setModal] = useState(false);
   const toggle = () => setModal(!modal);
+
+  //FORM MODAL TOGGLE------------------------
+  const [modal2, setModal2] = useState(false);
+  const toggle2 = () => setModal2(!modal2);
+  
 
   useEffect(() => {
     async function getContent() {
@@ -25,6 +31,7 @@ export const Tables = () => {
 
   return (
     <>
+    <Formu toggle2={toggle2} modal2={modal2}/>
     <ModalMain toggle={toggle} modal={modal} id={id} ondelete={filterData} />
     <Table>
 
@@ -49,7 +56,7 @@ export const Tables = () => {
               <td>{user.email}</td>
               <td>{user.occupation}</td>
               <td>{user.phone}</td>
-              <td  width='1px'><Button color="warning">Edit</Button></td>
+              <td  width='1px'><Button color="warning" onClick={ () => {toggle2(); setId(user._id)} } >Edit</Button></td>
               <td><Button color="danger" onClick={ () => {toggle(); setId(user._id)} } >Delete</Button>{' '}</td>
           </tr>
         ))}

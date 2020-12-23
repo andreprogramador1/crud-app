@@ -30,12 +30,12 @@ export const ModalMain = ({ modal, toggle, id, ondelete }) => {
   return (
     <>
         <Modal isOpen={modal} toggle={toggle}>
-          <ModalHeader toggle={toggle}>Modal title</ModalHeader>
+          <ModalHeader toggle={toggle}>Delete user</ModalHeader>
           <ModalBody>
             Delete user?
           </ModalBody>
           <ModalFooter>
-            <Button color="primary" onClick={() => {toggle();  handleDelete(id)} }>Do Something</Button>{' '}
+            <Button color="primary" onClick={() => {toggle();  handleDelete(id)} }>Delete</Button>{' '}
             <Button color="secondary" onClick={toggle}>Cancel</Button>
           </ModalFooter>
         </Modal>
