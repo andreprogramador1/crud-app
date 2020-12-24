@@ -2,6 +2,7 @@ import React,{useState, useEffect} from 'react'
 import api from '../services/api'
 import { useForm, Controller  } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup' 
+import { ErrorMessage } from '@hookform/error-message';
 import * as yup from "yup";
 
 import {
@@ -15,6 +16,7 @@ import {
   ModalBody,
   ModalFooter,
   Button,
+  FormFeedback
 } from 'reactstrap'
 
 const initialValue = {
@@ -28,7 +30,7 @@ const initialValue = {
 
 
 
-export const Formu = ({ modal2, toggle2, user }) => {
+export const Formu = ({ modal2, toggle2, user, nameToggle }) => {
 
   const phoneRegExp = /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/
 
@@ -42,10 +44,11 @@ export const Formu = ({ modal2, toggle2, user }) => {
   })
 
   // const [values, setValues] = useState(id ? null: initialValue)
-    const [values, setValues] = useState('')
+    
 
-  const { register, handleSubmit, control, reset } = useForm({
-    resolver: yupResolver(schema)
+  const { register, handleSubmit, control, errors } = useForm({
+    resolver: yupResolver(schema),
+    criteriaMode: "all",
   })
 
   console.log(user)
@@ -85,12 +88,12 @@ export const Formu = ({ modal2, toggle2, user }) => {
      : `http://localhost:3333/users/`
     api[method](url, data)
     .then((response) => {
-      console.log(response)
+      // console.log(response)
     })
    
   }
 
-  
+  console.log(nameToggle)
 
   return (
     <>
@@ -107,12 +110,13 @@ export const Formu = ({ modal2, toggle2, user }) => {
                     render={props => 
                       <Input 
                         type="text" 
-                        defaultValue={user.name}
+                        defaultValue={nameToggle.name == 'edit' ? user.name : ''}
                         id="name" 
                         placeholder="Name" 
                         onChange={e => props.onChange(e.target.value)} 
-                      />}
+                      /> } 
                   />
+
                 </FormGroup>
                 <FormGroup>
                   <Label for="LastName">LastName</Label>
@@ -123,7 +127,7 @@ export const Formu = ({ modal2, toggle2, user }) => {
                       <Input 
                         type="text" 
                         id="name" 
-                        placeholder="Name" 
+                        placeholder="lastName" 
                         onChange={e => props.onChange(e.target.value)} 
                       />}
                   />
@@ -137,7 +141,7 @@ export const Formu = ({ modal2, toggle2, user }) => {
                       <Input 
                         type="text" 
                         id="name" 
-                        placeholder="Name" 
+                        placeholder="email" 
                         onChange={e => props.onChange(e.target.value)} 
                       />}
                   />
@@ -151,7 +155,7 @@ export const Formu = ({ modal2, toggle2, user }) => {
                       <Input 
                         type="text" 
                         id="name" 
-                        placeholder="Name" 
+                        placeholder="password" 
                         onChange={e => props.onChange(e.target.value)} 
                       />}
                   />
@@ -165,7 +169,7 @@ export const Formu = ({ modal2, toggle2, user }) => {
                       <Input 
                         type="text" 
                         id="name" 
-                        placeholder="Name" 
+                        placeholder="occupation" 
                         onChange={e => props.onChange(e.target.value)} 
                       />}
                   />
@@ -179,7 +183,7 @@ export const Formu = ({ modal2, toggle2, user }) => {
                       <Input 
                         type="text" 
                         id="name" 
-                        placeholder="Name" 
+                        placeholder="phone" 
                         onChange={e => props.onChange(e.target.value)} 
                       />}
                   />

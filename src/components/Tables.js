@@ -14,7 +14,9 @@ export const Tables = () => {
   //FORM MODAL TOGGLE------------------------
   const [modal2, setModal2] = useState(false);
   const toggle2 = () => setModal2(!modal2);
-  
+
+  const [nameToggle, setName] = useState('')
+  console.log(nameToggle)
 
   useEffect(() => {
     async function getContent() {
@@ -31,7 +33,7 @@ export const Tables = () => {
 
   return (
     <>
-    <Formu toggle2={toggle2} modal2={modal2} user={id}/>
+    <Formu toggle2={toggle2} modal2={modal2} user={id} nameToggle={nameToggle}/>
     <ModalMain toggle={toggle} modal={modal} id={id} ondelete={filterData} />
     <Table>
 
@@ -56,11 +58,11 @@ export const Tables = () => {
               <td>{user.email}</td>
               <td>{user.occupation}</td>
               <td>{user.phone}</td>
-              <td  width='1px'><Button color="warning" onClick={ () => {toggle2(); setId(user)} } >Edit</Button></td>
+              <td  width='1px'><Button color="warning" onClick={ () => { toggle2(); setId(user); setName({name:'edit'}) } } >Edit</Button></td>
               <td><Button color="danger" onClick={ () => {toggle(); setId(user._id)} } >Delete</Button>{' '}</td>
           </tr>
         ))}
-        <Button color="primary" onClick={ () => {toggle2();} } >Create</Button>
+        <Button color="primary" onClick={ () => { toggle2(); setName({name:'create'}) } } >Create</Button>
       </tbody>
     </Table>
     </>
