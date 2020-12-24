@@ -1,5 +1,8 @@
 import React,{useState, useEffect} from 'react'
-import api from '../services/api' 
+import api from '../services/api'
+import { useForm, Controller  } from 'react-hook-form'
+import { yupResolver } from '@hookform/resolvers/yup' 
+import * as yup from "yup";
 
 import {
   Form,
@@ -11,7 +14,7 @@ import {
   ModalHeader, 
   ModalBody,
   ModalFooter,
-  Button
+  Button,
 } from 'reactstrap'
 
 const initialValue = {
@@ -27,33 +30,61 @@ const initialValue = {
 
 export const Formu = ({ modal2, toggle2, id }) => {
 
-  const [values, setValues] = useState(id ? null: initialValue)
-  console.log(id)
+  const phoneRegExp = /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/
 
-  useEffect(() => {
-      if(id) {
-        api.get(`/users/${id}`)
-        .then((response) => {
-          setValues(response.data)
-        })
-      }
-  },[id]);
+  const schema = yup.object().shape({
+    name: yup.string().min(2, 'too Short').required('required'),
+    lastName: yup.string().min(2, 'too Short').required('required'),
+    email: yup.string().email().required(),
+    password: yup.string().required(),
+    occupation: yup.string(),
+    phone: yup.string().matches(phoneRegExp, 'Phone number is not valid')
+  })
+
+  // const [values, setValues] = useState(id ? null: initialValue)
+
+  const { register, handleSubmit, control, reset } = useForm()
+
+  
+
+  // useEffect(() => {
+  //     if(id) {
+  //       api.get(`/users/${id}`)
+  //       .then((response) => {
+  //         setValues(response.data)
+  //       })
+  //     }
+  // },[id]);
 
 
-  function onChange(e) {
-    const { name, value } = e.target
-    //console.log({name, value})
-    setValues({...values, [name]: value})
-  }
+  // function onChange(e) {
+  //   const { name, value } = e.target
+  //   //console.log({name, value})
+  //   setValues({...values, [name]: value})
+  // }
 
-  function onSubmit(e) {
-    e.preventDefault();
+  // function onSubmit(e) {
+  //   e.preventDefault();
 
+  //   const method = id ? 'patch' : 'post'
+  //   const url = id
+  //    ? `http://localhost:3333/users/${id}`
+  //    : `http://localhost:3333/users/`
+  //   api[method](url, values)
+  //   .then((response) => {
+  //     console.log(response)
+  //   })
+   
+  // }
+
+  function onSubmit(data) {
+
+    console.log(data)
     const method = id ? 'patch' : 'post'
     const url = id
      ? `http://localhost:3333/users/${id}`
      : `http://localhost:3333/users/`
-    api[method](url, values)
+    api[method](url, data)
     .then((response) => {
       console.log(response)
     })
@@ -68,30 +99,90 @@ export const Formu = ({ modal2, toggle2, id }) => {
           <ModalHeader toggle={toggle2}>Form</ModalHeader>
           <ModalBody>
 
-            <Form onSubmit={onSubmit}>
+            <Form onSubmit={handleSubmit(onSubmit)}>
               <FormGroup>
-                <Label for="name">Name</Label>
-                <Input type="text" name="name" id="name" placeholder="Name" onChange={onChange} value={values.name}/>
+                <Label for="name">Name</Label>  
+                <Controller 
+                  name="name"  
+                  control={control}  
+                  render={props => 
+                    <Input 
+                      type="text" 
+                      id="name" 
+                      placeholder="Name" 
+                      onChange={e => props.onChange(e.target.value)} 
+                    />}
+                />
               </FormGroup>
               <FormGroup>
                 <Label for="LastName">LastName</Label>
-                <Input type="text" name="lastName" id="LastName" placeholder="LastName" onChange={onChange} value={values.lastName}/>
+                <Controller 
+                  name="lastname"  
+                  control={control}  
+                  render={props => 
+                    <Input 
+                      type="text" 
+                      id="name" 
+                      placeholder="Name" 
+                      onChange={e => props.onChange(e.target.value)} 
+                    />}
+                />
               </FormGroup>
               <FormGroup>
                 <Label for="email">Email</Label>
-                <Input type="email" name="email" id="email" placeholder="Email" onChange={onChange} value={values.email}/>
+                <Controller 
+                  name="email"  
+                  control={control}  
+                  render={props => 
+                    <Input 
+                      type="text" 
+                      id="name" 
+                      placeholder="Name" 
+                      onChange={e => props.onChange(e.target.value)} 
+                    />}
+                />
               </FormGroup>
               <FormGroup>
                 <Label for="password">Password</Label>
-                <Input type="password" name="password" id="password" placeholder="Password" onChange={onChange} value={values.password}/>
+                <Controller 
+                  name="password"  
+                  control={control}  
+                  render={props => 
+                    <Input 
+                      type="text" 
+                      id="name" 
+                      placeholder="Name" 
+                      onChange={e => props.onChange(e.target.value)} 
+                    />}
+                />
               </FormGroup>
               <FormGroup>
                 <Label for="Occupation">Occupation</Label>
-                <Input type="text" name="occupation" id="Occupation" placeholder="Occupation" onChange={onChange} value={values.occupation}/>
+                <Controller 
+                  name="occupation"  
+                  control={control}  
+                  render={props => 
+                    <Input 
+                      type="text" 
+                      id="name" 
+                      placeholder="Name" 
+                      onChange={e => props.onChange(e.target.value)} 
+                    />}
+                />
               </FormGroup>
               <FormGroup>
                 <Label for="Phone">Phone</Label>
-                <Input type="password" name="phone" id="Phone" placeholder="Phone" onChange={onChange} value={values.phone}/>
+                <Controller 
+                  name="phone"  
+                  control={control}  
+                  render={props => 
+                    <Input 
+                      type="text" 
+                      id="name" 
+                      placeholder="Name" 
+                      onChange={e => props.onChange(e.target.value)} 
+                    />}
+                />
               </FormGroup>
 
               <Button type='submit' color="primary" onClick={() => {toggle2();} } >Submit</Button>{' '}
