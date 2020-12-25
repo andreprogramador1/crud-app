@@ -1,3 +1,4 @@
+
 import React, {  useCallback, useMemo } from 'react'
 import api from '../services/api'
 import { useForm, Controller  } from 'react-hook-form'
@@ -15,6 +16,7 @@ import {
   Button,
 
 } from 'reactstrap'
+
 
 // const initialValue = {
 //   name: '',
@@ -120,7 +122,7 @@ export const Formu = ({ modal2, toggle2, user, nameToggle }) => {
                         placeholder="Name"
                         onChange={e => props.onChange(e.target.value) } 
                       />
-                      {errors.name && <span role="alert">{errors.name.message}</span>}    
+                      {errors.name && <span role="alert" style={{ color: 'red' }}>{errors.name.message}</span>}    
                       </>
                       } 
                   />
@@ -144,7 +146,7 @@ export const Formu = ({ modal2, toggle2, user, nameToggle }) => {
                         placeholder="lastName" 
                         onChange={e => props.onChange(e.target.value)} 
                       />
-                      {errors.lastName && <span role="alert">{errors.lastName.message}</span>}    
+                      {errors.lastName && <span role="alert" style={{ color: 'red' }}>{errors.lastName.message}</span>}    
                       </>
                     }
                   />
@@ -166,7 +168,7 @@ export const Formu = ({ modal2, toggle2, user, nameToggle }) => {
                         placeholder="email" 
                         onChange={e => props.onChange(e.target.value)} 
                       />
-                      {errors.email && <span role="alert">{errors.email.message}</span>}  
+                      {errors.email && <span role="alert" style={{ color: 'red' }}>{errors.email.message}</span>}  
                       </>}
                   />
                 </FormGroup>
@@ -187,7 +189,7 @@ export const Formu = ({ modal2, toggle2, user, nameToggle }) => {
                         placeholder="password" 
                         onChange={e => props.onChange(e.target.value)} 
                       />
-                      {errors.password && <span role="alert">{errors.password.message}</span>}    
+                      {errors.password && <span role="alert" style={{ color: 'red' }}>{errors.password.message}</span>}    
                       </>
                     }
                   />
@@ -209,7 +211,7 @@ export const Formu = ({ modal2, toggle2, user, nameToggle }) => {
                         placeholder="occupation" 
                         onChange={e => props.onChange(e.target.value)} 
                       />
-                      {errors.occupation && <span role="alert">{errors.occupation.message}</span>}    
+                      {errors.occupation && <span role="alert" style={{ color: 'red' }}>{errors.occupation.message}</span>}    
                       </>
                     }
                   />
@@ -231,7 +233,7 @@ export const Formu = ({ modal2, toggle2, user, nameToggle }) => {
                         placeholder="phone" 
                         onChange={e => props.onChange(e.target.value)} 
                       />
-                      {errors.phone && <span role="alert">{errors.phone.message}</span>}    
+                      {errors.phone && <span role="alert" style={{ color: 'red' }}>{errors.phone.message}</span>}    
                       </>
                     }
                   />
