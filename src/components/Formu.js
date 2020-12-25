@@ -1,8 +1,7 @@
-import React,{useState, useEffect} from 'react'
+import React, {  useCallback, useMemo } from 'react'
 import api from '../services/api'
 import { useForm, Controller  } from 'react-hook-form'
-import { yupResolver } from '@hookform/resolvers/yup' 
-import { ErrorMessage } from '@hookform/error-message';
+
 import * as yup from "yup";
 
 import {
@@ -10,78 +9,81 @@ import {
   FormGroup, 
   Label, 
   Input, 
-  FormText,
   Modal ,
   ModalHeader, 
   ModalBody,
-  ModalFooter,
   Button,
-  FormFeedback
+
 } from 'reactstrap'
 
-const initialValue = {
-  name: '',
-  lastName: '',
-  email: '',
-  password: '',
-  occupation: '',
-  phone: '',
-}
+// const initialValue = {
+//   name: '',
+//   lastName: '',
+//   email: '',
+//   password: '',
+//   occupation: '',
+//   phone: '',
+// }
 
+//-------------RESOLVER FOR YUP AND USE FORM---------------------------
+const useYupValidationResolver = validationSchema =>
+  useCallback(
+    async data => {
+      try {
+        const values = await validationSchema.validate(data, {
+          abortEarly: false
+        });
 
+        return {
+          values,
+          errors: {}
+        };
+      } catch (errors) {
+        return {
+          values: {},
+          errors: errors.inner.reduce(
+            (allErrors, currentError) => ({
+              ...allErrors,
+              [currentError.path]: {
+                type: currentError.type ?? "validation",
+                message: currentError.message
+              }
+            }),
+            {}
+          )
+        };
+      }
+    },
+    [validationSchema]
+  );
+
+ 
 
 export const Formu = ({ modal2, toggle2, user, nameToggle }) => {
 
-  const phoneRegExp = /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/
-
-  const schema = yup.object().shape({
-    name: yup.string().min(2, 'too Short').required('required'),
-    lastName: yup.string().min(2, 'too Short').required('required'),
-    email: yup.string().email().required(),
-    password: yup.string().required(),
-    occupation: yup.string(),
-    phone: yup.string().matches(phoneRegExp, 'Phone number is not valid')
-  })
+  const schema =  useMemo(() => (
+    yup.object().shape({
+      name: yup.string().min(2, 'too Short').required(),
+      lastName: yup.string().min(2, 'too Short').required(),
+      email: yup.string().email().required(),
+      password: yup.string().required(),
+      occupation: yup.string(),
+      phone: yup.string().required()
+    })
+  ))
 
   // const [values, setValues] = useState(id ? null: initialValue)
-    
+  
 
-  const { register, handleSubmit, control, errors } = useForm({
-    resolver: yupResolver(schema),
-    criteriaMode: "all",
+  const resolver = useYupValidationResolver(schema)
+  const { handleSubmit, control, errors } = useForm({
+    resolver,
+    mode: 'all',
   })
 
-  console.log(user)
-
-  // useEffect(() => {
-  //     if(id) {
-  //       api.get(`/users/${id}`)
-  //       .then((response) => {
-  //         setValues(response.data)
-  //       })
-  //     }
-  // },[id]);
-
-
-
-
-  // function onSubmit(e) {
-  //   e.preventDefault();
-
-  //   const method = id ? 'patch' : 'post'
-  //   const url = id
-  //    ? `http://localhost:3333/users/${id}`
-  //    : `http://localhost:3333/users/`
-  //   api[method](url, values)
-  //   .then((response) => {
-  //     console.log(response)
-  //   })
-   
-  // }
 
   function onSubmit(data) {
-
-    console.log(data)
+    
     const method = user._id ? 'patch' : 'post'
     const url = user._id
      ? `http://localhost:3333/users/${user._id}`
@@ -93,8 +95,7 @@ export const Formu = ({ modal2, toggle2, user, nameToggle }) => {
    
   }
 
-  console.log(nameToggle)
-
+  
   return (
     <>
         <Modal isOpen={modal2} toggle={toggle2}>
@@ -107,15 +108,23 @@ export const Formu = ({ modal2, toggle2, user, nameToggle }) => {
                   <Controller 
                     name="name"  
                     control={control}  
+                    defaultValue={nameToggle.name === 'edit' ? user.name : ''}
                     render={props => 
-                      <Input 
+                      <>
+                      <Input
+                        valid={props.value === '' ? false : !errors.name}
+                        invalid={!!errors.name}
                         type="text" 
-                        defaultValue={nameToggle.name == 'edit' ? user.name : ''}
+                        defaultValue={props.value}
                         id="name" 
-                        placeholder="Name" 
-                        onChange={e => props.onChange(e.target.value)} 
-                      /> } 
+                        placeholder="Name"
+                        onChange={e => props.onChange(e.target.value) } 
+                      />
+                      {errors.name && <span role="alert">{errors.name.message}</span>}    
+                      </>
+                      } 
                   />
+                  
 
                 </FormGroup>
                 <FormGroup>
@@ -123,13 +132,21 @@ export const Formu = ({ modal2, toggle2, user, nameToggle }) => {
                   <Controller 
                     name="lastName"  
                     control={control}  
+                    defaultValue={nameToggle.name === 'edit' ? user.lastName : ''} 
                     render={props => 
-                      <Input 
-                        type="text" 
+                      <>
+                      <Input
+                        valid={props.value === '' ? false : !errors.lastName}
+                        invalid={!!errors.lastName} 
+                        type="text"
+                        defaultValue={props.value} 
                         id="name" 
                         placeholder="lastName" 
                         onChange={e => props.onChange(e.target.value)} 
-                      />}
+                      />
+                      {errors.lastName && <span role="alert">{errors.lastName.message}</span>}    
+                      </>
+                    }
                   />
                 </FormGroup>
                 <FormGroup>
@@ -137,13 +154,20 @@ export const Formu = ({ modal2, toggle2, user, nameToggle }) => {
                   <Controller 
                     name="email"  
                     control={control}  
+                    defaultValue={nameToggle.name === 'edit' ? user.email : ''}  
                     render={props => 
+                      <>
                       <Input 
-                        type="text" 
+                        valid={props.value === '' ? false : !errors.email}
+                        invalid={!!errors.email} 
+                        type="text"
+                        defaultValue={props.value}  
                         id="name" 
                         placeholder="email" 
                         onChange={e => props.onChange(e.target.value)} 
-                      />}
+                      />
+                      {errors.email && <span role="alert">{errors.email.message}</span>}  
+                      </>}
                   />
                 </FormGroup>
                 <FormGroup>
@@ -151,13 +175,21 @@ export const Formu = ({ modal2, toggle2, user, nameToggle }) => {
                   <Controller 
                     name="password"  
                     control={control}  
+                    defaultValue={nameToggle.name === 'edit' ? user.password : ''} 
                     render={props => 
-                      <Input 
-                        type="text" 
+                      <>
+                      <Input
+                        valid={props.value === '' ? false : !errors.password}
+                        invalid={!!errors.password}  
+                        type="text"
+                        defaultValue={props.value}  
                         id="name" 
                         placeholder="password" 
                         onChange={e => props.onChange(e.target.value)} 
-                      />}
+                      />
+                      {errors.password && <span role="alert">{errors.password.message}</span>}    
+                      </>
+                    }
                   />
                 </FormGroup>
                 <FormGroup>
@@ -165,13 +197,21 @@ export const Formu = ({ modal2, toggle2, user, nameToggle }) => {
                   <Controller 
                     name="occupation"  
                     control={control}  
+                    defaultValue={nameToggle.name === 'edit' ? user.occupation : ''} 
                     render={props => 
-                      <Input 
-                        type="text" 
+                      <>
+                      <Input
+                        valid={props.value === '' ? false : !errors.occupation}
+                        invalid={!!errors.occupation}  
+                        type="text"
+                        defaultValue={props.value}   
                         id="name" 
                         placeholder="occupation" 
                         onChange={e => props.onChange(e.target.value)} 
-                      />}
+                      />
+                      {errors.occupation && <span role="alert">{errors.occupation.message}</span>}    
+                      </>
+                    }
                   />
                 </FormGroup>
                 <FormGroup>
@@ -179,17 +219,28 @@ export const Formu = ({ modal2, toggle2, user, nameToggle }) => {
                   <Controller 
                     name="phone"  
                     control={control}  
+                    defaultValue={nameToggle.name === 'edit' ? user.phone : ''}  
                     render={props => 
-                      <Input 
-                        type="text" 
+                      <>
+                      <Input
+                        valid={props.value === '' ? false : !errors.phone}
+                        invalid={!!errors.phone}  
+                        type="text"
+                        defaultValue={props.value}  
                         id="name" 
                         placeholder="phone" 
                         onChange={e => props.onChange(e.target.value)} 
-                      />}
+                      />
+                      {errors.phone && <span role="alert">{errors.phone.message}</span>}    
+                      </>
+                    }
                   />
                 </FormGroup>
 
-                <Button type='submit' color="primary" onClick={() => {toggle2();} } >Submit</Button>{' '}
+                <Button type='submit' color="primary" onClick={() => {
+                  if(Object.keys(errors).length === 0)
+                    toggle2();
+                }}>Submit</Button>{' '}
                 <Button color="secondary" onClick={toggle2}>Cancel</Button>
             </Form>
 
