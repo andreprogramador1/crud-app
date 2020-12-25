@@ -2,7 +2,7 @@
 import React, {  useCallback, useMemo } from 'react'
 import api from '../services/api'
 import { useForm, Controller  } from 'react-hook-form'
-
+import InputMask from 'react-input-mask';
 import * as yup from "yup";
 
 import {
@@ -62,6 +62,8 @@ const useYupValidationResolver = validationSchema =>
  
 
 export const Formu = ({ modal2, toggle2, user, nameToggle }) => {
+
+  const phoneRegex =  /\(?\b([0-9]{2,3}|0((x|[0-9]){2,3}[0-9]{2}))\)?\s*[0-9]{4,5}[- ]*[0-9]{4}\b/
 
   const schema =  useMemo(() => (
     yup.object().shape({
@@ -224,13 +226,18 @@ export const Formu = ({ modal2, toggle2, user, nameToggle }) => {
                     defaultValue={nameToggle.name === 'edit' ? user.phone : ''}  
                     render={props => 
                       <>
+
                       <Input
                         valid={props.value === '' ? false : !errors.phone}
                         invalid={!!errors.phone}  
-                        type="text"
+                        // type="text"
                         defaultValue={props.value}  
                         id="name" 
                         placeholder="phone" 
+                        type="tel"
+                        mask="(99) 99999-9999"
+                        maskChar=" "
+                        tag={InputMask}
                         onChange={e => props.onChange(e.target.value)} 
                       />
                       {errors.phone && <span role="alert" style={{ color: 'red' }}>{errors.phone.message}</span>}    
